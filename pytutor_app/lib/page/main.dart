@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
-import 'api_screen.dart';
+// import '../api_screen.dart';
+import '../widgets/mybutton.dart';
+import '../routes/app_route.dart';
+import 'package:get/get.dart';
 
 void main(List<String> args) {
-  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: Wako3d()));
+  runApp(
+    GetMaterialApp(
+      // MaterialApp(
+      initialRoute: AppRoutes.home,
+      debugShowCheckedModeBanner: false,
+      home: Wako3d(),
+      getPages: AppRoutes.routes,
+    ),
+  );
 }
 
 class Wako3d extends StatefulWidget {
@@ -17,6 +28,10 @@ class _Wako3dState extends State<Wako3d> {
     setState(() {
       index++;
     });
+  }
+
+  String world(String params) {
+    return 'hello world';
   }
 
   void kurang() {
@@ -61,20 +76,29 @@ class _Wako3dState extends State<Wako3d> {
                 Container(
                   width: 300,
                   height: 50,
-                  child: ElevatedButton(
+                  child: Mybutton(
+                    // text: world("Hello World"),
+                    text: "Kurang",
                     onPressed: kurang,
-                    child: Text("kurang"),
                   ),
                 ),
                 Divider(color: Colors.transparent, thickness: 0, height: 60),
+                // ElevatedButton(
+                //   onPressed: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(builder: (context) => AddressPage()),
+                //     );
+                //   },
+                //   child: Text("Pindah Halaman"),
+                // ),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Api_Screen()),
-                    );
-                  },
-                  child: Text("Pindah Halaman"),
+                  onPressed:
+                      () => Get.toNamed(
+                        AppRoutes.homepage,
+                        arguments: "HALLO", // Mengirimkan argumen
+                      ),
+                  child: Text("Routing ke homepage"),
                 ),
               ],
             ),

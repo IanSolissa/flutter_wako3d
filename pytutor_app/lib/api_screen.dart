@@ -1,26 +1,67 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class Api_Screen extends StatefulWidget {
-  @override
-  State<Api_Screen> createState() => _Api_ScreenState();
+void main(List<String> args) {
+  runApp(ApiPublic());
 }
 
-class _Api_ScreenState extends State<Api_Screen> {
-  // const Api({super.key});
+class ApiPublic extends StatefulWidget {
+  @override
+  State<ApiPublic> createState() => _ApiPublicState();
+}
+
+class _ApiPublicState extends State<ApiPublic> {
+  List<dynamic> posts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPosts();
+  }
+
+  Future<void> fetchPosts() async {
+    final response = await http.get(
+      Uri.parse('https://jsonplaceholder.typicode.com/posts'),
+    );
+
+    if (response.statusCode == 200) {
+      setState(() {
+        posts = json.decode(response.body);
+      });
+    } else {
+      throw Exception('Failed to load posts');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('halaman 2')),
-      body: Column(
-        children: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text("BACK"),
-          ),
-        ],
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text("API Public Example")),
+        body:
+            posts.isEmpty
+                ? Center(
+                  child: CircularProgressIndicator(),
+                ) // jika kosong maaka code ini jalan
+                : ListView.builder(
+                  // jika ada maka tampilkan data
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) {
+                    final post = posts[index];
+                    return ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.blueAccent,
+                        child: Text(
+                          post['id'].toString(),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      title: Text(post['title']),
+                      subtitle: Text(post['body']),
+                    );
+                  },
+                ),
       ),
     );
   }
